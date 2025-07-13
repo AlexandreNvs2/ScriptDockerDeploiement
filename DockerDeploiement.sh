@@ -11,28 +11,30 @@
 #Si option --create 
 if [ "$1" == "--create" ];then 
 
-
-
-
-	echo "L'option choisi est --create"
-
-#Définition grâce à $2 du nombre de conteneur voulu
+#Définition grâce à $2 le  nombre de conteneur voulu
 	nb_machine=1
 	 [ "$2" != "" ] && nb_machine=$2
 
-#On récupère l'id max 
-idmax='docker ps -a --format '{{ .Names }}' | awk -F "-" -v user=$USER '$0 ~ user"-alpine" {print $3} | sort -r | head -1'
-
-#Boucle for pour créer les conteneur en fonction du $2
-echo"Le(s) Conteneurs sont en cours de deploiement... "
-for i in $(seq 1 $nb_machine);do
-	docker run -tid --name $USER-alpine-$i alpine:latest
-	
-	echo" Conteneur $USER-alpine-$i à été créer"
-	
-	done
+#Set de min et max
+  min=1
+  max=0
 
 
+
+#Récupération de l'id max
+  idmax=$(docker ps -a --format '{{ .Names }}' | awk -F "-" -v user=$USER '$0 ~ user"-alpine" {print $3}' | sort -r | head -1)
+
+#Redéfinition de min et max
+
+  min=$(($idmax + 1))
+
+  max=$(($idmax + $nb_machine))
+
+#Boucle création de conteneur en fonction de min et max
+	for i in $(seq $min $max);do
+	  docker run -tid --name $USER-alpine-$i alpine:latest
+	echo "Conteneur $USER-alpine-$i créé"
+      done
 
 #Si option --drop
 elif [ "$1" == "--drop" ];then

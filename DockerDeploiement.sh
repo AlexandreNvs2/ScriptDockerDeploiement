@@ -8,6 +8,52 @@
 #
 ##################################################################
 
+#Si option --create 
+if [ "$1" == "--create" ];then 
+
+	echo "L'option choisi est --create"
+
+#Définition grâce à $2 du nombre de conteneur voulu
+	nb_machine=1
+	 [ "$2" != "" ] && nb_machine=$2
+
+
+#Boucle for pour créer les conteneur en fonction du $2
+echo"Le(s) Conteneurs sont en cours de deploiement... "
+for i in $(seq 1 $nb_machine);do
+	docker run -tid --name $USER-alpine-$i alpine:latest
+	
+	echo" Conteneur $USER-alpine-$i à été créer"
+	
+	done
+
+
+
+#Si option --drop
+elif [ "$1" == "--drop" ];then
+
+
+echo" Suppression des conteneur..."
+
+	docker rm -f $(docker ps -a | grep $USER-alpine | awk '{print $1}')
+echo" Le conteneur à été supprimé avec succès "
+
+#Si option --start
+elif [ "$1" == "--start" ];then
+
+	echo "L'option choisi est --start"
+
+
+
+#si option --ansible
+elif [ "$1" == "--ansible" ]; then
+
+	echo "L'option choisi est --ansible"
+
+
+
+# si aucune option affiche de l'aide
+else
 
 echo"
 
@@ -20,3 +66,4 @@ Options :
 	- --ansible : Deploiement ansible
 	
 "
+fi

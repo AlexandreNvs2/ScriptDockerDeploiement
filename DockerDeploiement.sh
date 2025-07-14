@@ -48,13 +48,23 @@ echo" Le conteneur à été supprimé avec succès "
 #Si option --start
 elif [ "$1" == "--start" ];then
 
-	echo "L'option choisi est --start"
+docker start $(docker ps -a | grep $USER-alpine | awk '{print$1}')
 
+
+#si options --infos
+elif [ "$1" == "--infos" ];then
+	echo " "
+        echo " Informations des conteneurs : "
+	echo " "
+for conteneur in $(docker ps -a | grep $USER-alpine | awk '{print $1}');do
+
+docker inspect -f ' => {{.Name}} - {{.NetworkSettings.IPAddress }}' $conteneur
+
+done
 
 
 #si option --ansible
-elif [ "$1" == "--ansible" ]; then
-
+elif [ "$1" == "--ansible" ];then
 	echo "L'option choisi est --ansible"
 
 
@@ -74,3 +84,4 @@ Options :
 	
 "
 fi
+
